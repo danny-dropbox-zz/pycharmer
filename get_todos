@@ -1,0 +1,7 @@
+#!/bin/bash
+
+branch=$1
+branchingPoint=`diff -u <(git rev-list --first-parent $branch --max-count=15000) <(git rev-list --first-parent master --max-count=15000) | sed -ne 's/^ //p' | head -1`
+echo "TODO list:"
+git diff $branchingPoint $1 | grep '^+' | grep TODO
+echo

@@ -1,0 +1,19 @@
+#!/bin/bash
+set -e
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+prevHEAD=$1
+newHEAD=$2
+checkoutType=$3
+
+[[ $checkoutType == 1 ]] && checkoutType='branch' ||                             
+                            checkoutType='file' ;                                
+
+prevBranch=`git reflog | awk 'NR==1{ print $6}'`
+newBranch=`git reflog | awk 'NR==1{ print $8}'`
+
+$DIR/pycharm-branch.py $prevBranch $newBranch $DIR
+
+$DIR/get_todos $newHEAD
+echo "BLAH!!!!"
+osascript $DIR/close_all_pycharm.scpt 2> ~/hackweek/text
+$DIR/open_files.py
