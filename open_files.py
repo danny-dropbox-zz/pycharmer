@@ -4,8 +4,9 @@ import string
 import xml.etree.ElementTree as ET
 import os
 
-PROJECT_RELATIVE_PATH = '.idea/workspace.xml'
-WORKSPACE_FILE_PATH =  '/Users/dannysi/src/server/' + PROJECT_RELATIVE_PATH
+PROJECT_RELATIVE_PATH = '/src/server/.idea/workspace.xml'
+HOME_PATH = os.path.expanduser("~")
+WORKSPACE_FILE_PATH =  HOME_PATH + PROJECT_RELATIVE_PATH
 
 # Pretty stupid function. TODO- check if there is other way for doing this, and if we need python 3.2 for "elem.iter"
 def get_sub_elem(elem, sub_elem_name):
@@ -33,7 +34,7 @@ def get_open_files_paths(files_editor_manager):
     open_files_info = []
     for file_raw_path, line in open_files_raw_paths:
         file_path = string.replace(file_raw_path, 'file://$PROJECT_DIR$', '~/src/server')
-        file_path = string.replace(file_path, 'file://$APPLICATION_CONFIG_DIR$', '~/Library/Preferences/PyCharm2017.3')
+        file_path = string.replace(file_path, 'file://$APPLICATION_CONFIG_DIR$', '~/Library/Preferences/PyCharm2017.3') # TODO: don't assume pycharm version
         open_files_info.append((file_path, line))
     return open_files_info
 
@@ -51,3 +52,4 @@ def main():
     open_files(open_files_info)
 
 main()
+
