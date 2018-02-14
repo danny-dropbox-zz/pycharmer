@@ -15,7 +15,6 @@ home = os.path.expanduser("~")
 main_dir = home+'/.pycharm-switcher'
 make_dir_if_not_exists(main_dir)
 _, prevBranch, newBranch, root_dir = sys.argv
-root_dir = os.path.dirname(os.path.dirname(root_dir))
 prevDir= main_dir+"/"+prevBranch
 make_dir_if_not_exists(prevDir)
 workspace_dir=root_dir+"/.idea"

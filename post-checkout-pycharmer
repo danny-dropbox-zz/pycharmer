@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -e
+prevHEAD=$1
+newHEAD=$2
+checkoutType=$3
+REPO=$4
+
+[[ $checkoutType == 1 ]] && checkoutType='branch' ||
+                            checkoutType='file' ;
+
+prevBranch=`git reflog | awk 'NR==1{ print $6}'`
+newBranch=`git reflog | awk 'NR==1{ print $8}'`
+$PYCHARMER_DIR/pycharm-branch.py $prevBranch $newBranch $REPO
+if [ "$newBranch" != "master" ]
+then
+$PYCHARMER_DIR/get_todos $newHEAD
+fi
+osascript $PYCHARMER_DIR/close_all_pycharm.scpt > /dev/null 2>&1
+$PYCHARMER_DIR/open_files.py > /dev/null 2>&1
+osascript $PYCHARMER_DIR/backToIterm.scpt
