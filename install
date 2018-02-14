@@ -1,0 +1,11 @@
+#!/bin/bash
+REPO=$1
+this_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+echo "export PYCHARMER_DIR='$this_dir'" >> ~/.zshrc
+end="/.git/hooks/post-checkout"
+post_checkout="$REPO$end"
+if [ ! -f $post_checkout ]; then 
+	echo "#!/bin/bash" >> $post_checkout
+fi
+echo "$this_dir/post-checkout-pycharmer \$1 \$2 \$3 $REPO" >> $post_checkout
+chmod u+x $post_checkout
