@@ -1,0 +1,66 @@
+# Steps:
+# 1. Having relevant diff file using Danysi's method
+# 2. Keep it in a temp file (which we will delete at the end)/ Load to memory
+# 3. Parse .py files with lines from that file
+# 4. Parse TODOs files with lines from that file
+# 5. have a dict/list of file to a list of its TODOs
+# 6. decide about output (talk to Danny)
+# 7. Check if/how can we make pycharm links/ other convenient way for working with that
+
+
+import commands
+
+
+# 5:
+def get_file_to_todos_dict():
+    status, files = commands.getstatusoutput("""grep -n "+++" /Users/snadler/src/server/temp | grep ".py" """)
+    status, TODOs = commands.getstatusoutput("""grep -in "TODO" /Users/snadler/src/server/temp | grep "+" """)
+    # creating list of lines:
+    files_list = files.splitlines()
+    todos_list = TODOs.splitlines()
+    line_and_file_name_list = [raw.split(":") for raw in files_list]
+    line_and_todo_list = [raw.split(":") for raw in todos_list]
+    cur_todos_index = 0
+    file_and_todos = []
+    for i in range(len(line_and_file_name_list) - 1):
+        file_and_todos.append((line_and_file_name_list[i][1], []))
+        next_file_raw = int(line_and_file_name_list[i+1][0])
+        print("i- {}, next_raw-{}, file name- {}".format(i, next_file_raw, line_and_file_name_list[i][1]))
+        while int(line_and_todo_list[cur_todos_index][0]) < next_file_raw:
+            file_and_todos[i][1].append(line_and_todo_list[cur_todos_index][1])
+            cur_todos_index += 1
+            if cur_todos_index > len(line_and_todo_list):
+                return
+
+
+def get_file_to_todos_dict():
+    status, output = commands.getstatusoutput("""grep -E '\+.*TODO|\+\+\+.*\.py' /Users/snadler/src/server/temp""")    # TODO: We might not need the -n anymore
+    files_and_todos_list = output.splitlines()
+    line_cursor = 0
+    todos_list = []
+    file_name_to_todos = dict() # TODO- change to something more efficient
+    file_name = None
+    while line_cursor < len(files_and_todos_list):
+        line = files_and_todos_list[line_cursor]
+        line_cursor += 1
+        if line.find("TODO") != -1:
+            todos_list.append(line)
+            continue
+        if line[-3:] == ".py":
+            # closing last file:
+            if file_name and len(todos_list):
+                file_name_to_todos[file_name] = todos_list
+            file_name = line.split("/", 1)[1]
+            todos_list = []
+    return file_name_to_todos
+
+for k,v in file_name_to_todos.iteritems():
+    print("file: {}, \nTODOs: {}".format(k,v))
+
+# Draft:
+# status, output = commands.getstatusoutput("""grep -in "TODO" /Users/snadler/src/server/temp | grep "+" """)
+# status, output = commands.getstatusoutput("""grep - En '\+.*TODO|\+\+\+.*\.py' /Users/snadler/src/server/temp""")
+
+# grep "TODO" temp | grep "+" | less
+
+# grep -n "+++" /Users/snadler/src/server/temp | grep ".py" > pys_file
