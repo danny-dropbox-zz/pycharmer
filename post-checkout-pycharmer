@@ -1,5 +1,10 @@
 #!/bin/bash
 
+off=`git config user.pycharmer`
+if [ "$off" == "off" ]; then
+	exit
+fi
+
 set -e
 prevHEAD=$1
 newHEAD=$2
@@ -12,10 +17,13 @@ REPO=$4
 prevBranch=`git reflog | awk 'NR==1{ print $6}'`
 newBranch=`git reflog | awk 'NR==1{ print $8}'`
 $PYCHARMER_DIR/pycharm-branch.py $prevBranch $newBranch $REPO
+
 if [ "$newBranch" != "master" ]
 then
 $PYCHARMER_DIR/get_todos $newHEAD
 fi
-osascript $PYCHARMER_DIR/close_all_pycharm.scpt > /dev/null 2>&1
+
+osascript -e 'tell application "System Events" to tell process "PyCharm" to click menu item "Close All" of menu of menu item "Editor Tabs" of menu "Window" of menu bar 1' > /dev/null 2>&1
 $PYCHARMER_DIR/open_files.py > /dev/null 2>&1
-osascript $PYCHARMER_DIR/backToIterm.scpt
+sleep 1
+osascript -e 'tell application "iTerm" to activate'
