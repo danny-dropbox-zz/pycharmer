@@ -1,5 +1,10 @@
 #!/bin/bash
 
+off=`git config user.pycharmer`
+if [ "$off" == "off" ]; then
+	exit
+fi
+
 set -e
 prevHEAD=$1
 newHEAD=$2
