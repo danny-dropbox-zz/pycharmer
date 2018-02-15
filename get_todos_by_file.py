@@ -25,15 +25,22 @@ def get_file_to_todos_dict(branch, branching_point):
                 file_name_to_todos[file_name] = todos_list
             file_name = line.split("/", 1)[1]
             todos_list = []
+
+    # for the last file (TODOs come after it and we end with file end).
+    if file_name and len(todos_list):
+        file_name_to_todos[file_name] = todos_list
+
     return file_name_to_todos
 
 
 # TODO: check if/how we can get links in pycharm
 def display_files_to_todos(file_name_to_todos):
+    if len(file_name_to_todos):
+        print("TODOs:")
     for file_name,todos in file_name_to_todos.iteritems():
-        print("file: {} TODOs:".format(file_name))
+        print("file: {}".format(file_name))
         for todo in todos:
-            print("     -{}".format(todo.split("TODO", 1)[1]))
+            print("     -{}".format(todo.split("TODO", 1)[1][1:]))
 
 
 def main():
