@@ -37,6 +37,8 @@ def display_files_to_todos(file_name_to_todos):
 
 
 def main():
+    if len(sys.argv) < 3:
+        return
     branch = sys.argv[1]
     branchingPoint = sys.argv[2]
     file_name_to_todos = get_file_to_todos_dict(branch, branchingPoint)
