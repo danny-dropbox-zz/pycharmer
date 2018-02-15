@@ -1,10 +1,13 @@
 #!/usr/bin/python
 
 import commands
+import sys
 
 
-def get_file_to_todos_dict(input_file_name):
-    status, output = commands.getstatusoutput("""grep -E '\+.*TODO|\+\+\+.*\.py'""" + " " + input_file_name)    # TODO: We might not need the -n anymore
+def get_file_to_todos_dict(branch, branching_point):
+    git_command = "git diff {} {}".format(branching_point, branch)
+    grep_command = "grep -E '\+.*TODO|\+\+\+.*\.py'"
+    status, output = commands.getstatusoutput("{} | {}".format(git_command, grep_command))
     files_and_todos_list = output.splitlines()
     line_cursor = 0
     todos_list = []
@@ -30,4 +33,14 @@ def display_files_to_todos(file_name_to_todos):
     for file_name,todos in file_name_to_todos.iteritems():
         print("file: {} TODOs:".format(file_name))
         for todo in todos:
-            print("     -{}".format(todo.split("TODO",1)[1]))
+            print("     -{}".format(todo.split("TODO", 1)[1]))
+
+
+def main():
+    branch = sys.argv[1]
+    branchingPoint = sys.argv[2]
+    file_name_to_todos = get_file_to_todos_dict(branch, branchingPoint)
+    display_files_to_todos(file_name_to_todos)
+
+
+main()
