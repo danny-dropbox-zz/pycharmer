@@ -6,8 +6,6 @@ import os
 import commands
 import sys
 
-HOME_PATH = os.path.expanduser("~")
-
 
 def get_pycharm_folder():
     status, output = commands.getstatusoutput("find  ~//Library/Preferences -type d | grep -m1 PyCharm")
@@ -42,14 +40,14 @@ def get_open_files_paths(repository_path, files_editor_manager):
         open_files_raw_paths.append(active_file_raw_path)  # Adding active file (the one with focus on) at the end
     open_files_info = []
     for file_raw_path, line in open_files_raw_paths:
-        file_path = string.replace(file_raw_path, 'file://$PROJECT_DIR$', '~' + repository_path)
+        file_path = string.replace(file_raw_path, 'file://$PROJECT_DIR$', repository_path)
         file_path = string.replace(file_path, 'file://$APPLICATION_CONFIG_DIR$', '~/Library/Preferences/' + pycharm_folder)
         open_files_info.append((file_path, line))
     return open_files_info
 
 
 def open_files(repository_path, open_files_info):
-    command = '/Applications/PyCharm.app/Contents/MacOS/pycharm ' + '~' + repository_path
+    command = '/Applications/PyCharm.app/Contents/MacOS/pycharm ' + repository_path
     for file_path, line in open_files_info:
         command += ' --line ' + line + " " + file_path
     os.system(command)
@@ -58,8 +56,7 @@ def open_files(repository_path, open_files_info):
 def main():
     # calculate paths:
     repository_path = sys.argv[1]
-    workspace_file_path = HOME_PATH + repository_path + '/.idea/workspace.xml'
-
+    workspace_file_path = repository_path + '/.idea/workspace.xml'
     tree = ET.parse(workspace_file_path)
     root = tree.getroot()
     files_editor_manager = get_file_editor_component(root)
