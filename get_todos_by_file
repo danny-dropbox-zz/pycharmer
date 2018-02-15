@@ -1,12 +1,4 @@
-# Steps:
-# 1. Having relevant diff file using Danysi's method
-# 2. Keep it in a temp file (which we will delete at the end)/ Load to memory
-# 3. Parse .py files with lines from that file
-# 4. Parse TODOs files with lines from that file
-# 5. have a dict/list of file to a list of its TODOs
-# 6. decide about output (talk to Danny)
-# 7. Check if/how can we make pycharm links/ other convenient way for working with that
-
+#!/usr/bin/python
 
 import commands
 
@@ -33,6 +25,9 @@ def get_file_to_todos_dict(input_file_name):
     return file_name_to_todos
 
 
+# TODO: check if/how we can get links in pycharm
 def display_files_to_todos(file_name_to_todos):
-    for k,v in file_name_to_todos.iteritems():
-        print("file: {}, \nTODOs: {}".format(k, v))
+    for file_name,todos in file_name_to_todos.iteritems():
+        print("file: {} TODOs:".format(file_name))
+        for todo in todos:
+            print("     -{}".format(todo.split("TODO",1)[1]))
