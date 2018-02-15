@@ -24,6 +24,6 @@ $PYCHARMER_DIR/get_todos $newHEAD
 fi
 
 osascript -e 'tell application "System Events" to tell process "PyCharm" to click menu item "Close All" of menu of menu item "Editor Tabs" of menu "Window" of menu bar 1' > /dev/null 2>&1
-$PYCHARMER_DIR/open_files.py > /dev/null 2>&1
+$PYCHARMER_DIR/open_files.py $REPO > /dev/null 2>&1
 sleep 1
 osascript -e 'tell application "iTerm" to activate'
